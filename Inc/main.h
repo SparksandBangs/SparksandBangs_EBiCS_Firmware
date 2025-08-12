@@ -78,7 +78,7 @@
 #define BRAKE_LIGHT_GPIO_Port GPIOB
 #define PAS_Pin GPIO_PIN_8
 #define PAS_GPIO_Port GPIOB
-#define Brake_Pin GPIO_PIN_11  // put a 15 here for new generation controllers!
+#define Brake_Pin GPIO_PIN_15  // put a 15 here for new generation controllers! Used to be 11 change back if doesn't work
 #define Brake_GPIO_Port GPIOA
 #define Speed_EXTI5_Pin GPIO_PIN_5
 #define Speed_EXTI5_GPIO_Port GPIOB
@@ -88,7 +88,7 @@
 #define PAS_EXTI8_EXTI_IRQn EXTI9_5_IRQn
 
 //#define NCTE
-//#define LEGALFLAG
+#define LEGALFLAG
 #define BATTERYVOLTAGE_MAX 53000
 #define R_TEMP_PULLUP 0
 #define INT_TEMP_25 0
@@ -131,6 +131,7 @@ extern uint32_t ui32_tim1_counter;
 extern uint32_t uint32_PAS_counter;
 extern uint8_t throttle_is_set(void);
 extern uint8_t brake_is_set(void);
+extern uint8_t pas_is_set(void);
 extern void UART_IdleItCallback(void);
 extern void get_internal_temp_offset(void);
 
@@ -197,6 +198,8 @@ typedef struct
 	uint8_t       	pulses_per_revolution;
 	uint16_t       	phase_current_max;
 	int32_t       	battery_current_max;
+	uint8_t			power_assist_tuning;
+
 
 
 }MotorParams_t;
