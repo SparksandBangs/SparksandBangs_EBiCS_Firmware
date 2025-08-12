@@ -2,6 +2,11 @@ This project has reached a certain maturity, use is always at your own risk. The
 
 The [master]([https://github.com/ShalokShalom/EBiCS_Firmware/wiki](https://github.com/EBiCS/EBiCS_Firmware/tree/master) branch supports sensored motors, Bafang-, Kunteng- Kingmeter-Displays, and debugging.
 
+
+This specific build has been tested using an AKM hub motor, LCD3 and a V12L PAS sensor. Currently only working with a KT display.
+Controller is the new generation 12FET.
+
+
 User-specific settings can be done in a user-friendly GUI.
 
 Throttle, torque-simulation, and torque-sensor modes are available.
@@ -29,3 +34,4 @@ This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
 (at your option) any later version.
+
