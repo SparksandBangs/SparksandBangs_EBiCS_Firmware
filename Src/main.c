@@ -736,19 +736,6 @@ int main(void)
 
 			ui8_adc_regular_flag=0;
 		}
-
-		//PAS signal processing
-
-		//Counts number of times PAS flag is activated and deactivated
-		//	if(uint8_PAS_flag_counter < (PAS_START_DELAY)){
-		//		if(ui8_PAS_flag){
-		//			if(uint8_PAS_flag_counter % 2 == 0){uint8_PAS_flag_counter += 1;}//if pas_flag_counter is even
-		//		}
-		//		else{
-		//			if(uint8_PAS_flag_counter % 2 != 0){uint8_PAS_flag_counter += 1;}//if pas_flag_counter is odd
-		//		}
-		//	}
-
 			if(ui8_PAS_flag){
 				if(uint32_PAS_counter>100){ //debounce
 					uint32_PAS_cumulated -= uint32_PAS_cumulated>>2;
