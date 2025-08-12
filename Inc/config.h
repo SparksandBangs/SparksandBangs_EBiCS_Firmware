@@ -81,7 +81,6 @@
 #define PAS_TIMEOUT 3000//PAS_TIMEOUT must be higher than RAMP_END
 #define RAMP_END 2000
 #define PAS_IMP_PER_TURN 32//Appears to have no effects in torque simulation mode.
-#define PAS_START_DELAY 6//Number of pulses detected before assistance starts.
 
 //---------------------------------------------------------------------
 //Throttle settings
