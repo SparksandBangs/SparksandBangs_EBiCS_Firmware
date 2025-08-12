@@ -143,7 +143,7 @@
 //#define DISPLAY_TYPE DISPLAY_TYPE_KINGMETER_901U //KM5S
 #define DISPLAY_TYPE DISPLAY_TYPE_KUNTENG //KT LCD3
 
-//#define ENABLE_WATT_METER //Only for KT Displays. Comment out to disable. If Watt meter is disabled gives a spoof reading and shows below 250W. Can be re-enabled temporarily until switch off by activating stealth mode.
+#define ENABLE_WATT_METER //Only for KT Displays. Comment out to disable. If Watt meter is disabled gives a spoof reading and shows below 250W. Can be re-enabled temporarily until switch off by activating stealth mode.
 
 //---------------------------------------------------------------------
 //Regen settings
