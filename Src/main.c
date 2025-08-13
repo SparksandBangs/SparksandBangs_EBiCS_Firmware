@@ -376,22 +376,10 @@ int main(void)
 	MS.i_q_setpoint = 0;
 	MS.i_d_setpoint = 0;
 	MS.angle_est=SPEED_PLL;
-
-	if(MS.Voltage>1720){//1720*25 is 43V
-		uint16_current_max_battery_type = PH_CURRENT_MAX;
-		uint16_batterycurrent_max_battery_type = BATTERYCURRENT_MAX;
-		uint16_minimum_voltage_battery_type = VOLTAGE_MIN;
-	}
-	else{
-		uint16_current_max_battery_type = PH_CURRENT_MAX_36;
-		uint16_batterycurrent_max_battery_type = BATTERYCURRENT_MAX_36;
-		uint16_minimum_voltage_battery_type = VOLTAGE_MIN_36;
-	}
-
 	MP.pulses_per_revolution = PULSES_PER_REVOLUTION;
 	MP.wheel_cirumference = WHEEL_CIRCUMFERENCE;
 	MP.speedLimit=SPEEDLIMIT;
-	MP.battery_current_max = uint16_batterycurrent_max_battery_type;
+	MP.battery_current_max = BATTERYCURRENT_MAX_36;
 	MP.power_assist_tuning = 2;
 
 
@@ -736,6 +724,7 @@ int main(void)
 
 			ui8_adc_regular_flag=0;
 		}
+
 			if(ui8_PAS_flag){
 				if(uint32_PAS_counter>100){ //debounce
 					uint32_PAS_cumulated -= uint32_PAS_cumulated>>2;
@@ -788,6 +777,20 @@ int main(void)
 			ui16_erps=500000/((uint32_tics_filtered>>3)*6);
 			ui8_SPEED_control_flag=0;
 		}
+
+//Check battery voltage
+//Set current limits and minimum voltages. If battery is under 43V assume 36V battery.
+		if(MS.Voltage>1720){//1720*25 is 43V
+			uint16_current_max_battery_type = PH_CURRENT_MAX;
+			uint16_batterycurrent_max_battery_type = BATTERYCURRENT_MAX;
+			uint16_minimum_voltage_battery_type = VOLTAGE_MIN;
+		}
+		else{
+			uint16_current_max_battery_type = PH_CURRENT_MAX_36;
+			uint16_batterycurrent_max_battery_type = BATTERYCURRENT_MAX_36;
+			uint16_minimum_voltage_battery_type = VOLTAGE_MIN_36;
+		}
+		MP.battery_current_max = uint16_batterycurrent_max_battery_type;
 
 #if (DISPLAY_TYPE == DISPLAY_TYPE_DEBUG && defined(FAST_LOOP_LOG))
 		if(ui8_debug_state==3 && ui8_UART_TxCplt_flag){
