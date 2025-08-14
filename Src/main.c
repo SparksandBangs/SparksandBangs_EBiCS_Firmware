@@ -381,6 +381,8 @@ int main(void)
 	MP.speedLimit=SPEEDLIMIT;
 	MP.battery_current_max = BATTERYCURRENT_MAX_36;
 	MP.power_assist_tuning = 2;
+	MP.softstart = SOFTSTART;
+	MP.throttle_graduated = THROTTLE_GRADUATED;
 
 
 	//init PI structs
@@ -888,6 +890,14 @@ int main(void)
 					uint8_assist_figure_L1 = assist_factor_H[1];
 				}
 
+				//Speed factor adjustment. Adds more current at slower wheel speed to counteract known speed bug delivering more power at higher speeds.
+				//if (uint8_assist_figure>190){
+				//			uint8_assist_figure=255
+				//}
+				//else{
+				//		uint8_assist_figure = map(uint32_SPEEDx100_cumulated>>SPEEDFILTER, 0, 3000, uint8_assist_figure + (uint8_assist_figure>>2), uint8_assist_figure);
+				//}
+
 #ifdef LEGALFLAG
 				if (uint32_SPEEDx100_cumulated>>SPEEDFILTER>((MP.speedLimit)+3)*100){ui8_Overshoot_Counter=2;}
 				if (ui8_Overshoot_Counter!=2){
@@ -904,8 +914,8 @@ int main(void)
 					int32_out_max1 = (uint16_current_max_battery_type * uint8_assist_figure) >> 8;
 
 					// Perform mapping
-					if (SOFTSTART!=0){
-						uint16_mapped_PAS = map(uint32_SPEEDx100_cumulated>>SPEEDFILTER, 0, SOFTSTART * 100, int32_out_min1, int32_out_max1);
+					if (MP.softstart!=0){
+						uint16_mapped_PAS = map(uint32_SPEEDx100_cumulated>>SPEEDFILTER, 0, MP.softstart * 100, int32_out_min1, int32_out_max1);
 					}
 					else{
 						uint16_mapped_PAS = int32_out_max1;
@@ -965,17 +975,22 @@ int main(void)
 
 #else //else NTCE
 				// read in throttle for throttle override
-				if(MS.assist_level!=0){
-#ifdef THROTTLE_GRADUATED
-					uint16_mapped_throttle = map(ui16_throttle, ui16_throttle_offset, THROTTLE_MAX, 0,uint16_current_max_battery_type);
-#else
-					if(ui16_throttle>ui16_throttle_offset + (THROTTLE_MAX - throttle_offset)>2) {//Safety factor 1/4 of travel before delivering full current.
-						uint16_mapped_throttle = uint16_current_max_battery_type);}
+				if(MS.assist_level != 0){
+
+					if(MP.throttle_graduated == 1){
+						uint16_mapped_throttle = map(ui16_throttle, ui16_throttle_offset, THROTTLE_MAX, 0,uint16_current_max_battery_type);
 					}
-				else{
-						uint16_mapped_throttle = 0
+					else{
+
+							if(ui16_throttle > (ui16_throttle_offset + ((THROTTLE_MAX - ui16_throttle_offset)>>2))) {//Safety factor 1/4 of travel before delivering full current.
+								uint16_mapped_throttle = uint16_current_max_battery_type;
+							}
+							else{
+								uint16_mapped_throttle = 0;
+							}
+
+
 					}
-#endif
 				}
 
 #endif //end NTCE
