@@ -919,7 +919,8 @@ int main(void)
 				//If overshoot counter = 1
 				else {
 					// Calculate output range (assist)
-					int32_out_min2 = (uint16_current_max_battery_type * uint8_assist_figure) >> 8;
+					//int32_out_min2 = (uint16_current_max_battery_type * uint8_assist_figure) >> 8;
+					int32_out_min2 = int32_out_max1;
 					int32_out_max2 = (uint16_current_max_battery_type * uint8_assist_figure_L1) >> 8;
 					// Perform mapping
 					uint16_mapped_PAS = map(uint32_SPEEDx100_cumulated>>SPEEDFILTER, (MP.speedLimit-4)*100, (MP.speedLimit)*100, int32_out_min2, int32_out_max2);
