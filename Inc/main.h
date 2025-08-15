@@ -199,8 +199,7 @@ typedef struct
 	uint16_t       	phase_current_max;
 	int32_t       	battery_current_max;
 	uint8_t			power_assist_tuning;
-	uint8_t			softstart;
-	uint8_t			throttle_graduated;
+
 
 
 }MotorParams_t;
