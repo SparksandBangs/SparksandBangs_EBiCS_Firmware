@@ -98,7 +98,7 @@
 #define PUSH_ASSIST_LIMIT 6 //Speed limit for push and walk assist in kmph
 
 
-#define SOFTSTART 0 // On PAS ramps current at startup between 0kmph and SOFTSTART value from SOFTSTART_LOW_POWER to selected Assistance level power. Setting is in whole kmph.
+#define SOFTSTART 9 // On PAS ramps current at startup between 0kmph and SOFTSTART value from SOFTSTART_LOW_POWER to selected Assistance level power. Setting is in whole kmph.
 #define SOFTSTART_LOW_POWER 30 //From 0 to 255. 33 is ~ 13% of phase current. Ramps up from this value to assist level value between 0kmph and SOFTSTART
 #define CUTOFF_POWER 20 //Minimum power still provided at point of legal limit cutoff. After this point will drop to 0. From 0 to 255. 33 is ~ 13% of phase current. Should be less than lowest Assist Level 1.
 
@@ -142,7 +142,7 @@
 //#define DISPLAY_TYPE DISPLAY_TYPE_KINGMETER_901U //KM5S
 #define DISPLAY_TYPE DISPLAY_TYPE_KUNTENG //KT LCD3
 
-//#define ENABLE_WATT_METER //Only for KT Displays. Comment out to disable. If Watt meter is disabled gives a spoof reading and shows below 250W. Can be re-enabled temporarily until switch off by activating stealth mode.
+#define ENABLE_WATT_METER //Only for KT Displays. Comment out to disable. If Watt meter is disabled gives a spoof reading and shows below 250W. Can be re-enabled temporarily until switch off by activating stealth mode.
 
 //---------------------------------------------------------------------
 //Regen settings
