@@ -231,6 +231,9 @@ void check_message(MotorState_t* MS_D, MotorParams_t* MP_D)
      lcd_configuration_variables.ui8_controller_max_current = (ui8_rx_buffer [7] & 15);
      MS_D->assist_level = lcd_configuration_variables.ui8_assist_level;
 
+
+    	 MP_D->speedLimit = lcd_configuration_variables.ui8_max_speed;
+
 		lcd_configuration_variables.ui8_p1 = ui8_rx_buffer[3];
 		lcd_configuration_variables.ui8_p2 = ui8_rx_buffer[4] & 0x07;
 		lcd_configuration_variables.ui8_p3 = ui8_rx_buffer[4] & 0x08;
@@ -247,8 +250,6 @@ void check_message(MotorState_t* MS_D, MotorParams_t* MP_D)
 
 		if(lcd_configuration_variables.ui8_p1 != ui8_gear_ratio){ ui8_gear_ratio=lcd_configuration_variables.ui8_p1;}
 		if(lcd_configuration_variables.ui8_p2 != MP_D->pulses_per_revolution){MP_D->pulses_per_revolution = lcd_configuration_variables.ui8_p2;}
-		if(lcd_configuration_variables.ui8_p4 != MP_D->throttle_graduated){MP_D->throttle_graduated = lcd_configuration_variables.ui8_p4;}
-		if(lcd_configuration_variables.ui8_c5 != MP_D->softstart){MP_D->softstart = lcd_configuration_variables.ui8_c5;}
 		if(lcd_configuration_variables.ui8_c14 != MP_D->power_assist_tuning){MP_D->power_assist_tuning = lcd_configuration_variables.ui8_c14;}
 
 		//Counts number of times brake is pulled and released
