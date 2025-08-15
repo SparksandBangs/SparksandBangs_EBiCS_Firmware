@@ -890,16 +890,6 @@ int main(void)
 					uint8_assist_figure_L1 = assist_factor_H[1];
 				}
 
-
-				//Speed factor adjustment. Adds more current at slower wheel speed to counteract known speed bug delivering more power at higher speeds.
-				if (uint8_assist_figure>204){
-							uint8_assist_figure=255;
-				}
-				else{
-						uint8_assist_figure = map(uint32_SPEEDx100_cumulated>>SPEEDFILTER, 0, 3000, uint8_assist_figure + (uint8_assist_figure>>2), uint8_assist_figure);
-				}
-
-
 #ifdef LEGALFLAG
 				if (uint32_SPEEDx100_cumulated>>SPEEDFILTER>((MP.speedLimit)+3)*100){ui8_Overshoot_Counter=2;}
 				if (ui8_Overshoot_Counter!=2){
@@ -913,7 +903,9 @@ int main(void)
 					if(uint8_softstart_low_power>uint8_assist_figure){uint8_softstart_low_power=uint8_assist_figure;}
 
 					int32_out_min1 = (uint16_current_max_battery_type * uint8_softstart_low_power) >> 8;
-					int32_out_max1 = (uint16_current_max_battery_type * uint8_assist_figure) >> 8;
+					//int32_out_max1 = (uint16_current_max_battery_type * uint8_assist_figure) >> 8;
+					//Speed factor correction. Adds more current at slower wheel speed to counteract known speed bug delivering more power at higher speeds.
+					int32_out_max1 = map(MS.Battery_Current, 0 , (MP.battery_current_max * uint8_assist_figure)>>8, (uint16_current_max_battery_type>>1), (uint16_current_max_battery_type * uint8_assist_figure)>>8);
 
 					// Perform mapping
 					if (SOFTSTART!=0){
