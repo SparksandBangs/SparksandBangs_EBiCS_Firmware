@@ -96,7 +96,7 @@
 #define PULSES_PER_REVOLUTION 1 //Wheel Speed Pulse Signal Setting
 #define SPEEDLIMIT 25 //Speed limit in kmph
 #define PUSH_ASSIST_LIMIT 6 //Speed limit for push and walk assist in kmph
-#define ORM 29 //For testing purposes. Kunteng display only. Not to be used in finished build.
+
 
 #define SOFTSTART 0 // On PAS ramps current at startup between 0kmph and SOFTSTART value from SOFTSTART_LOW_POWER to selected Assistance level power. Setting is in whole kmph.
 #define SOFTSTART_LOW_POWER 30 //From 0 to 255. 33 is ~ 13% of phase current. Ramps up from this value to assist level value between 0kmph and SOFTSTART
