@@ -1,18 +1,16 @@
 This project has reached a certain maturity, use is always at your own risk. The authors do not accept any liability for damage to property or personal injury!  
 
-The [master]([https://github.com/ShalokShalom/EBiCS_Firmware/wiki](https://github.com/EBiCS/EBiCS_Firmware/tree/master) branch supports sensored motors, Bafang-, Kunteng- Kingmeter-Displays, and debugging.
+This version was forkedfrom the [master]([https://github.com/ShalokShalom/EBiCS_Firmware/wiki](https://github.com/EBiCS/EBiCS_Firmware/tree/master) and has been tested on the equipment listed below.
+
 
 
 This specific build has been tested using an AKM hub motor, LCD3 and a V12L PAS sensor. Currently only working with a KT display.
-Controller is the new generation 12FET.
+Controller used is the new generation 12FET.
+
+This is being used with torque simulation and no torque sensor and has been modified significantly from the original master branch.
 
 
-User-specific settings can be done in a user-friendly GUI.
 
-Throttle, torque-simulation, and torque-sensor modes are available.
-
-The [sensorless_VESC](https://github.com/EBiCS/EBiCS_Firmware/tree/Sensorless_VESC) branch has adapted the VESC's sensorless control. It was recently optimized for a Fischer ETH 1606 bike. 
-Of course, it will work with other motors, too.
 
 A short tutorial can be found in the [Wiki](https://github.com/EBiCS/EBiCS_Firmware/wiki).
 
@@ -34,4 +32,5 @@ This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
 (at your option) any later version.
+
 
