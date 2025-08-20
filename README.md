@@ -7,7 +7,7 @@ This version was forked from the [master](https://github.com/EBiCS/EBiCS_Firmwar
 
 
 
-This specific build has been tested using an AKM hub motor, LCD3 and a V12L PAS sensor. Currently only working with a KT display.
+This specific build has been tested using an AKM hub motor, LCD3 and a V12L PAS sensor. Currently only tested and working with a KT display.
 Controller used is the new generation 12FET.
 
 This is being used with torque simulation and no torque sensor and has been modified significantly from the original master branch.
@@ -35,6 +35,7 @@ This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
 (at your option) any later version.
+
 
 
 
