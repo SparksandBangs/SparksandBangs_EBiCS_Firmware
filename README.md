@@ -1,5 +1,8 @@
 This project has reached a certain maturity, use is always at your own risk. The authors do not accept any liability for damage to property or personal injury!  
 
+-----------------------------------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------------------------------
+
 This version was forkedfrom the [master]([https://github.com/ShalokShalom/EBiCS_Firmware/wiki](https://github.com/EBiCS/EBiCS_Firmware/tree/master) and has been tested on the equipment listed below.
 
 
@@ -9,8 +12,8 @@ Controller used is the new generation 12FET.
 
 This is being used with torque simulation and no torque sensor and has been modified significantly from the original master branch.
 
-
-
+-----------------------------------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------------------------------
 
 A short tutorial can be found in the [Wiki](https://github.com/EBiCS/EBiCS_Firmware/wiki).
 
@@ -32,5 +35,6 @@ This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
 (at your option) any later version.
+
 
 
