@@ -173,7 +173,6 @@ int8_t i8_recent_rotor_direction=1;
 uint8_t ui8_PAS_Not_Stopped=0;
 int16_t i16_hall_order=1;
 uint16_t ui16_erps=0;
-uint8_t ui8_Overshoot_Counter=0;
 uint8_t ui8_speedlimit_set=0;
 uint8_t uint8_PAS_flag_counter=0;
 
@@ -185,8 +184,6 @@ uint16_t uint16_mapped_BRAKE=0;
 uint16_t uint16_half_rotation_counter=0;
 uint16_t uint16_full_rotation_counter=0;
 int32_t int32_temp_current_target=0;
-int32_t int32_temp_current_target_speed_rising=0;
-int32_t int32_temp_current_target_speed_falling=0;
 
 q31_t q31_PLL_error=0;
 q31_t q31_t_Battery_Current_accumulated=0;
@@ -876,7 +873,6 @@ int main(void)
 #endif
 
 #if (DISPLAY_TYPE == DISPLAY_TYPE_KUNTENG)
-				//uint16_mapped_PAS = map(uint32_PAS, RAMP_END, PAS_TIMEOUT, (uint16_current_max_battery_type*(int32_t)(assist_factor[MS.assist_level]))>>8, 0); // level in range 0...5
 				if (MP.power_assist_tuning == 2) {
 					uint8_assist_figure = assist_factor[MS.assist_level];
 					uint8_assist_figure_L1 = assist_factor[1];
@@ -890,42 +886,30 @@ int main(void)
 					uint8_assist_figure_L1 = assist_factor_H[1];
 				}
 
-#ifdef LEGALFLAG
-				if (uint32_SPEEDx100_cumulated>>SPEEDFILTER>((MP.speedLimit)+3)*100){ui8_Overshoot_Counter=2;}
-				if (ui8_Overshoot_Counter!=2){
-					if (uint32_SPEEDx100_cumulated>>SPEEDFILTER>(MP.speedLimit)*100){ui8_Overshoot_Counter=1;}
+				// Calculate output range (assist)
+				if(uint8_softstart_low_power>uint8_assist_figure){uint8_softstart_low_power=uint8_assist_figure;}
+
+				int32_out_min1 = (uint16_current_max_battery_type * uint8_softstart_low_power) >> 8;
+				//int32_out_max1 = (uint16_current_max_battery_type * uint8_assist_figure) >> 8;
+				//Speed factor correction. Adds more current at slower wheel speed to counteract known speed bug delivering more power at higher speeds.
+				int32_out_max1 = map(MS.Battery_Current, 0 , (MP.battery_current_max * uint8_assist_figure)>>8, (uint16_current_max_battery_type), (uint16_current_max_battery_type * uint8_assist_figure)>>8);
+
+				//PAS flag counter count number of pulses before mapped PAS value is increased from zero.
+				if(uint8_PAS_flag_counter<PAS_FLAG_START_DELAY){//defined in config.h
+					if (ui8_PAS_flag==1 && uint8_PAS_flag_counter % 2 == 0) {uint8_PAS_flag_counter+=1;}
+					else if (ui8_PAS_flag==1 && uint8_PAS_flag_counter % 2 != 0) {uint8_PAS_flag_counter+=1;}
+					uint16_mapped_PAS = 0;
 				}
-				if (uint32_SPEEDx100_cumulated>>SPEEDFILTER<((MP.speedLimit)-4)*100){ui8_Overshoot_Counter=0;}
-
-				if (ui8_Overshoot_Counter!=1){
-#endif
-					// Calculate output range (assist)
-					if(uint8_softstart_low_power>uint8_assist_figure){uint8_softstart_low_power=uint8_assist_figure;}
-
-					int32_out_min1 = (uint16_current_max_battery_type * uint8_softstart_low_power) >> 8;
-					//int32_out_max1 = (uint16_current_max_battery_type * uint8_assist_figure) >> 8;
-					//Speed factor correction. Adds more current at slower wheel speed to counteract known speed bug delivering more power at higher speeds.
-					int32_out_max1 = map(MS.Battery_Current, 0 , (MP.battery_current_max * uint8_assist_figure)>>8, (uint16_current_max_battery_type>>1), (uint16_current_max_battery_type * uint8_assist_figure)>>8);
-
+				else{
 					// Perform mapping
 					if (SOFTSTART!=0){
-						uint16_mapped_PAS = map(uint32_SPEEDx100_cumulated>>SPEEDFILTER, 0, SOFTSTART * 100, int32_out_min1, int32_out_max1);
+							uint16_mapped_PAS = map(uint32_SPEEDx100_cumulated>>SPEEDFILTER, 0, SOFTSTART * 100, int32_out_min1, int32_out_max1);
 					}
 					else{
-						uint16_mapped_PAS = int32_out_max1;
+							uint16_mapped_PAS = int32_out_max1;
 					}
-#ifdef LEGALFLAG
 				}
-				//If overshoot counter = 1
-				else {
-					// Calculate output range (assist)
-					//int32_out_min2 = (uint16_current_max_battery_type * uint8_assist_figure) >> 8;
-					int32_out_min2 = int32_out_max1;
-					int32_out_max2 = (uint16_current_max_battery_type * uint8_assist_figure_L1) >> 8;
-					// Perform mapping
-					uint16_mapped_PAS = map(uint32_SPEEDx100_cumulated>>SPEEDFILTER, (MP.speedLimit-4)*100, (MP.speedLimit)*100, int32_out_min2, int32_out_max2);
-				}
-#endif
+
 #endif
 
 #if (DISPLAY_TYPE == DISPLAY_TYPE_KINGMETER_618U)
@@ -933,7 +917,34 @@ int main(void)
 #endif
 
 #if (DISPLAY_TYPE == DISPLAY_TYPE_KINGMETER_901U||DISPLAY_TYPE == DISPLAY_TYPE_NO2)
-				uint16_mapped_PAS = map(uint32_PAS, RAMP_END, PAS_TIMEOUT, ((uint16_current_max_battery_type*(int32_t)(assist_factor[MS.assist_level])))>>8, 0); // level in range 0...255
+				//uint16_mapped_PAS = map(uint32_PAS, RAMP_END, PAS_TIMEOUT, ((uint16_current_max_battery_type*(int32_t)(MS.assist_level)))>>8, 0); // level in range 0...255
+
+				uint8_assist_figure = MS.assist_level;
+
+				// Calculate output range (assist)
+				if(uint8_softstart_low_power>uint8_assist_figure){uint8_softstart_low_power=uint8_assist_figure;}
+
+				int32_out_min1 = (uint16_current_max_battery_type * uint8_softstart_low_power) >> 8;
+				//int32_out_max1 = (uint16_current_max_battery_type * uint8_assist_figure) >> 8;
+				//Speed factor correction. Adds more current at slower wheel speed to counteract known speed bug delivering more power at higher speeds.
+				int32_out_max1 = map(MS.Battery_Current, 0 , (MP.battery_current_max * uint8_assist_figure)>>8, (uint16_current_max_battery_type), (uint16_current_max_battery_type * uint8_assist_figure)>>8);
+
+				//PAS flag counter count number of pulses before mapped PAS value is increased from zero.
+				if(uint8_PAS_flag_counter<PAS_FLAG_START_DELAY){//defined in config.h
+					if (ui8_PAS_flag==1 && uint8_PAS_flag_counter % 2 == 0) {uint8_PAS_flag_counter+=1;}
+					else if (ui8_PAS_flag==1 && uint8_PAS_flag_counter % 2 != 0) {uint8_PAS_flag_counter+=1;}
+					uint16_mapped_PAS = 0;
+				}
+				else{
+					// Perform mapping
+					if (SOFTSTART!=0){
+							uint16_mapped_PAS = map(uint32_SPEEDx100_cumulated>>SPEEDFILTER, 0, SOFTSTART * 100, int32_out_min1, int32_out_max1);
+					}
+					else{
+							uint16_mapped_PAS = int32_out_max1;
+					}
+				}
+
 #endif
 
 #if (DISPLAY_TYPE == DISPLAY_TYPE_DEBUG)
@@ -974,8 +985,6 @@ int main(void)
 #ifdef THROTTLE_GRADUATED
 						uint16_mapped_throttle = map(ui16_throttle, ui16_throttle_offset, THROTTLE_MAX, 0,uint16_current_max_battery_type);
 #else
-
-
 						if(ui16_throttle > (ui16_throttle_offset + 50) {//Safety factor to ensure throttle travel before delivering full current.
 								uint16_mapped_throttle = uint16_current_max_battery_type;
 						}
@@ -990,7 +999,6 @@ int main(void)
 #ifndef TS_MODE //normal PAS Mode
 
 				//if (uint32_PAS_counter < PAS_TIMEOUT) int32_temp_current_target = uint16_mapped_PAS;		//set current target in torque-simulation-mode, if pedals are turning
-				//if ((uint32_PAS_counter < PAS_TIMEOUT)&&(uint8_PAS_flag_counter>(1))) {
 				if (uint32_PAS_counter < PAS_TIMEOUT) {
 					int32_temp_current_target = uint16_mapped_PAS;	//set current target in torque-simulation-mode, if pedals are turning
 					ui8_PAS_Not_Stopped=1;
@@ -1004,52 +1012,46 @@ int main(void)
 				}
 
 #endif		// end #ifndef TS_MODE
-
-				//check for throttle override
-				if(uint16_mapped_throttle>int32_temp_current_target){
-
+					//check for throttle override
+					if(uint16_mapped_throttle>int32_temp_current_target){
+						if(uint8_PAS_flag_counter>=PAS_FLAG_START_DELAY){//Ensure pas is moving before engaging throttle.
 #ifdef SPEEDTHROTTLE
 
+						uint16_mapped_throttle = uint16_mapped_throttle*MP.speedLimit/uint16_current_max_battery_type;//throttle override: calulate speed target from thottle
 
-					uint16_mapped_throttle = uint16_mapped_throttle*MP.speedLimit/uint16_current_max_battery_type;//throttle override: calulate speed target from thottle
-
-
-
-
-					PI_speed.setpoint = uint16_mapped_throttle*100;
-					PI_speed.recent_value = internal_tics_to_speedx100(uint32_tics_filtered>>3);
-					if( PI_speed.setpoint)SET_BIT(TIM1->BDTR, TIM_BDTR_MOE);
-					if (internal_tics_to_speedx100(uint32_tics_filtered>>3)<300){//control current slower than 3 km/h
-						PI_speed.limit_i=100;
-						PI_speed.limit_output=100;
-						int32_temp_current_target = PI_control(&PI_speed);
-
-						if(int32_temp_current_target>100)int32_temp_current_target=100;
-						if(int32_temp_current_target*i8_direction*i8_reverse_flag<0){
-							int32_temp_current_target=0;
-						}
-
-					}
-					else{
-
-
-						if(ui8_SPEED_control_flag){//update current target only, if new hall event was detected
-							PI_speed.limit_i=uint16_current_max_battery_type;
-							PI_speed.limit_output=uint16_current_max_battery_type;
+						PI_speed.setpoint = uint16_mapped_throttle*100;
+						PI_speed.recent_value = internal_tics_to_speedx100(uint32_tics_filtered>>3);
+						if( PI_speed.setpoint)SET_BIT(TIM1->BDTR, TIM_BDTR_MOE);
+						if (internal_tics_to_speedx100(uint32_tics_filtered>>3)<300){//control current slower than 3 km/h
+							PI_speed.limit_i=100;
+							PI_speed.limit_output=100;
 							int32_temp_current_target = PI_control(&PI_speed);
-							ui8_SPEED_control_flag=0;
+
+							if(int32_temp_current_target>100)int32_temp_current_target=100;
+							if(int32_temp_current_target*i8_direction*i8_reverse_flag<0){
+								int32_temp_current_target=0;
+							}
+
 						}
-						if(int32_temp_current_target*i8_direction*i8_reverse_flag<0)int32_temp_current_target=0;
-
-					}
+						else{
 
 
+							if(ui8_SPEED_control_flag){//update current target only, if new hall event was detected
+								PI_speed.limit_i=uint16_current_max_battery_type;
+								PI_speed.limit_output=uint16_current_max_battery_type;
+								int32_temp_current_target = PI_control(&PI_speed);
+								ui8_SPEED_control_flag=0;
+							}
+							if(int32_temp_current_target*i8_direction*i8_reverse_flag<0)int32_temp_current_target=0;
+
+						}
 
 #else // else speedthrottle
-					int32_temp_current_target=uint16_mapped_throttle;
+						int32_temp_current_target=uint16_mapped_throttle;
 #endif  //end speedthrottle
+						}
+					} //end else of throttle override
 
-				} //end else of throttle override
 
 #endif //end throttle override
 
@@ -1062,19 +1064,26 @@ int main(void)
 						int32_temp_current_target=0;
 					}
 					else {
-						if (uint32_SPEEDx100_cumulated>>SPEEDFILTER>MP.speedLimit*100){ui8_speedlimit_set=1;}
-						else if (uint32_SPEEDx100_cumulated>>SPEEDFILTER<(MP.speedLimit-1)*100){ui8_speedlimit_set=0;}
-						int32_temp_current_target_speed_rising=map(uint32_SPEEDx100_cumulated>>SPEEDFILTER, (MP.speedLimit-2)*100,(MP.speedLimit)*100,int32_temp_current_target,(uint16_current_max_battery_type * CUTOFF_POWER) >> 8);
-						int32_temp_current_target_speed_falling=map(uint32_SPEEDx100_cumulated>>SPEEDFILTER, (MP.speedLimit-1)*100,(MP.speedLimit)*100,int32_temp_current_target,0);
-						if(ui8_speedlimit_set==0){
-							int32_temp_current_target = int32_temp_current_target_speed_rising;
+						if (uint32_SPEEDx100_cumulated>>SPEEDFILTER>(MP.speedLimit+3)*100){ui8_speedlimit_set = 2;}//Overshot speed limit by 3kmph
+						else if (uint32_SPEEDx100_cumulated>>SPEEDFILTER<MP.speedLimit*100 && ui8_speedlimit_set == 2){ui8_speedlimit_set=3;}//Below speed limit after overshoot
+						else if (uint32_SPEEDx100_cumulated>>SPEEDFILTER>MP.speedLimit*100 && ui8_speedlimit_set != 2){ui8_speedlimit_set=1;}//Gone over speed limit
+						else if (uint32_SPEEDx100_cumulated>>SPEEDFILTER<(MP.speedLimit-3)*100){ui8_speedlimit_set=0;}//3kmph below speed limit
+
+
+						if(ui8_speedlimit_set!=1){
+							//speed rising
+							int32_temp_current_target = map(uint32_SPEEDx100_cumulated>>SPEEDFILTER, (MP.speedLimit-2)*100,(MP.speedLimit)*100,int32_temp_current_target,(uint16_current_max_battery_type * CUTOFF_POWER) >> 8);
 						}
 						else{
-							if(int32_temp_current_target_speed_falling>int32_temp_current_target_speed_rising){
-								int32_temp_current_target = int32_temp_current_target_speed_rising;
+							//speed falling
+							if (uint32_SPEEDx100_cumulated>>SPEEDFILTER>(MP.speedLimit-1)*100){
+									int32_temp_current_target = map(uint32_SPEEDx100_cumulated>>SPEEDFILTER, (MP.speedLimit-1)*100,(MP.speedLimit)*100,(uint16_current_max_battery_type * CUTOFF_POWER),0);
 							}
+							//else if (int32_temp_current_target < (uint16_current_max_battery_type)>>1){
+							//		int32_temp_current_target = map(uint32_SPEEDx100_cumulated>>SPEEDFILTER, (MP.speedLimit-2)*100,(MP.speedLimit-1)*100,int32_temp_current_target,(uint16_current_max_battery_type)>>2);
+							//}
 							else{
-								int32_temp_current_target = int32_temp_current_target_speed_falling;
+								int32_temp_current_target = map(uint32_SPEEDx100_cumulated>>SPEEDFILTER, (MP.speedLimit-3)*100,(MP.speedLimit-1)*100,int32_temp_current_target,(uint16_current_max_battery_type * CUTOFF_POWER));
 							}
 						}
 					}
