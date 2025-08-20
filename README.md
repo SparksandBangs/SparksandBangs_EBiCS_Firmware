@@ -3,7 +3,7 @@ This project has reached a certain maturity, use is always at your own risk. The
 -----------------------------------------------------------------------------------------------------------------------------------
 -----------------------------------------------------------------------------------------------------------------------------------
 
-This version was forked from the masterhttps://github.com/EBiCS/EBiCS_Firmware/tree/master and has been tested on the equipment listed below.
+This version was forked from the master [https://github.com/EBiCS/EBiCS_Firmware/tree/master] and has been tested on the equipment listed below.
 
 
 
@@ -35,6 +35,7 @@ This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
 (at your option) any later version.
+
 
 
 
