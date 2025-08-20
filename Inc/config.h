@@ -75,12 +75,13 @@
 
 //----------------------------------------------------------------------
 //PAS mode settings
-//#define DIRDET
-#define FRAC_HIGH 30
-#define FRAC_LOW 15
+//#define DIRDET //Direction detection - used to determine if pedal sensor is rotating backwards. Not needed with double hall PAS (comment out).
+#define FRAC_HIGH 30 //Used with DIRDET
+#define FRAC_LOW 15 //Used with DIRDET
 #define PAS_TIMEOUT 3000//PAS_TIMEOUT must be higher than RAMP_END
 #define RAMP_END 2000
 #define PAS_IMP_PER_TURN 32//Appears to have no effects in torque simulation mode.
+#define PAS_FLAG_START_DELAY 2 //Number of flags detected before PAS Assist engages.
 
 //---------------------------------------------------------------------
 //Throttle settings
@@ -109,17 +110,17 @@
 //---------------------------------------------------------------------
 //power settings
 
-//PH_CURRENT_MAX The code calculates in ADC values, since the processor is completely indifferent to physical units.
+//Phase current and voltages - The code calculates in ADC values, since the processor is completely indifferent to physical units.
 //To get the ADC value, which you enter in config.h, you have to divide the value in mV or mA by the respective calibration factor. For current this is 38, for voltage 25.
 //
 //Forums suggest that the 12FET controller should be able to handle 80A phase current for short periods.
 //1200 --> 1200*38 ~ 45A, 1000 --> 1000*38 ~ 38A, 800 --> 800*38 ~ 30A, 600 --> 600*38 ~ 23A
 
 #define PH_CURRENT_MAX 900 //Phase current for 48V battery
-#define BATTERYCURRENT_MAX 25000//Battery current for 48V Battery
+#define BATTERYCURRENT_MAX 25000//Maximum battery current for 48V Battery in mA
 
 #define PH_CURRENT_MAX_36 720//Phase current for 36V battery
-#define BATTERYCURRENT_MAX_36 20000//Battery current for 36V Battery
+#define BATTERYCURRENT_MAX_36 20000//Maximum battery current for 36V Battery in mA
 
 #define STARTASSIST_CURRENT 250 // Start assist phase current from throttle when in legal mode.
 #define WALKASSIST_CURRENT 80 //Walk assist phase current activated from display.
