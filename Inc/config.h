@@ -97,7 +97,7 @@
 #define PULSES_PER_REVOLUTION 1 //Wheel Speed Pulse Signal Setting
 #define SPEEDLIMIT 25 //Speed limit in kmph
 #define PUSH_ASSIST_LIMIT 6 //Speed limit for push and walk assist in kmph
-
+#define ORM 29 //For testing purposes. Kunteng display only. Not to be used in finished build.
 
 #define SOFTSTART 9 // On PAS ramps current at startup between 0kmph and SOFTSTART value from SOFTSTART_LOW_POWER to selected Assistance level power. Setting is in whole kmph.
 #define SOFTSTART_LOW_POWER 30 //From 0 to 255. 33 is ~ 13% of phase current. Ramps up from this value to assist level value between 0kmph and SOFTSTART
@@ -125,6 +125,9 @@
 #define STARTASSIST_CURRENT 250 // Start assist phase current from throttle when in legal mode.
 #define WALKASSIST_CURRENT 80 //Walk assist phase current activated from display.
 
+#define STARTASSIST_CURRENT_36 335 // Start assist phase current from throttle when in legal mode for 36V battery.
+#define WALKASSIST_CURRENT_36 110 //Walk assist phase current activated from display for 36V battery.
+
 #define REVERSE 1 //1 for normal direction, -1 for reverse
 
 //VOLTAGE_MIN is another ADC value calibration factor for voltage is 25. 1800*25 is 45V
@@ -143,7 +146,7 @@
 //#define DISPLAY_TYPE DISPLAY_TYPE_KINGMETER_901U //KM5S
 #define DISPLAY_TYPE DISPLAY_TYPE_KUNTENG //KT LCD3
 
-#define ENABLE_WATT_METER //Only for KT Displays. Comment out to disable. If Watt meter is disabled gives a spoof reading and shows below 250W. Can be re-enabled temporarily until switch off by activating stealth mode.
+//#define ENABLE_WATT_METER //Only for KT Displays. Comment out to disable. If Watt meter is disabled gives a spoof reading and shows below 250W. Can be re-enabled temporarily until switch off by activating stealth mode.
 
 //---------------------------------------------------------------------
 //Regen settings
