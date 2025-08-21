@@ -783,11 +783,15 @@ int main(void)
 			uint16_current_max_battery_type = PH_CURRENT_MAX;
 			uint16_batterycurrent_max_battery_type = BATTERYCURRENT_MAX;
 			uint16_minimum_voltage_battery_type = VOLTAGE_MIN;
+			uint16_start_assist_current = STARTASSIST_CURRENT;
+			uint16_walk_assist_current = WALKASSIST_CURRENT;
 		}
 		else{
 			uint16_current_max_battery_type = PH_CURRENT_MAX_36;
 			uint16_batterycurrent_max_battery_type = BATTERYCURRENT_MAX_36;
 			uint16_minimum_voltage_battery_type = VOLTAGE_MIN_36;
+			uint16_start_assist_current = STARTASSIST_CURRENT_36;
+			uint16_walk_assist_current = WALKASSIST_CURRENT_36;
 		}
 		MP.battery_current_max = uint16_batterycurrent_max_battery_type;
 
