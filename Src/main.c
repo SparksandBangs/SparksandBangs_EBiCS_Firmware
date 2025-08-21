@@ -1014,10 +1014,9 @@ int main(void)
 #endif		// end #ifndef TS_MODE
 					//check for throttle override
 					if(uint16_mapped_throttle>int32_temp_current_target){
-						if(uint8_PAS_flag_counter>=PAS_FLAG_START_DELAY){//Ensure pas is moving before engaging throttle.
 #ifdef SPEEDTHROTTLE
 
-						uint16_mapped_throttle = uint16_mapped_throttle*MP.speedLimit/uint16_current_max_battery_type;//throttle override: calulate speed target from thottle
+						uint16_mapped_throttle = uint16_mapped_throttle*MP.speedLimit/uint16_current_max_battery_type;//throttle override: calculate speed target from throttle
 
 						PI_speed.setpoint = uint16_mapped_throttle*100;
 						PI_speed.recent_value = internal_tics_to_speedx100(uint32_tics_filtered>>3);
@@ -1047,9 +1046,8 @@ int main(void)
 						}
 
 #else // else speedthrottle
-						int32_temp_current_target=uint16_mapped_throttle;
+							int32_temp_current_target=uint16_mapped_throttle;
 #endif  //end speedthrottle
-						}
 					} //end else of throttle override
 
 
@@ -1059,7 +1057,7 @@ int main(void)
 			//ramp down setpoint at speed limit
 #ifdef LEGALFLAG
 			if(!brake_flag){ //only ramp down if no regen active
-				if(uint32_PAS_counter<PAS_TIMEOUT){
+				if(uint32_PAS_counter<PAS_TIMEOUT && uint8_PAS_flag_counter>=PAS_FLAG_START_DELAY){
 					if (uint32_SPEEDx100_cumulated>>SPEEDFILTER>MP.speedLimit*100){
 						int32_temp_current_target=0;
 					}
@@ -1089,16 +1087,15 @@ int main(void)
 					}
 				}
 				else{ //limit to PUSH_ASSIST_LIMIT if pedals are not turning
-					if(ui8_Walk_Assist_flag){
-						if (int32_temp_current_target > uint16_walk_assist_current){ int32_temp_current_target = uint16_walk_assist_current; }//Ensures that target current is not set above maximum walk assist current in config.h
-					}
-					else{
-						if (int32_temp_current_target > uint16_start_assist_current){ int32_temp_current_target = uint16_start_assist_current; }//Ensures that target current is not set above maximum push assist current in config.h
-					}
-					int32_temp_current_target=map(uint32_SPEEDx100_cumulated>>SPEEDFILTER, (PUSH_ASSIST_LIMIT*100)-150,PUSH_ASSIST_LIMIT*100,int32_temp_current_target,0);
+						if(ui8_Walk_Assist_flag){
+							if (int32_temp_current_target > uint16_walk_assist_current){ int32_temp_current_target = uint16_walk_assist_current; }//Ensures that target current is not set above maximum walk assist current in config.h
+						}
+						else{
+							if (int32_temp_current_target > uint16_start_assist_current){ int32_temp_current_target = uint16_start_assist_current; }//Ensures that target current is not set above maximum push assist current in config.h
+						}
+						int32_temp_current_target=map(uint32_SPEEDx100_cumulated>>SPEEDFILTER, (PUSH_ASSIST_LIMIT*100)-150,PUSH_ASSIST_LIMIT*100,int32_temp_current_target,0);
 				}
 			}
-			//			else int32_temp_current_target=int32_temp_current_target;
 
 #endif //legalflag
 
