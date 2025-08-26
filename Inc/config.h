@@ -117,9 +117,11 @@
 //1200 --> 1200*38 ~ 45A, 1000 --> 1000*38 ~ 38A, 800 --> 800*38 ~ 30A, 600 --> 600*38 ~ 23A
 
 #define PH_CURRENT_MAX 900 //Phase current for 48V battery
+#define PH_CURRENT_BOOST 1200 //Maximum phase current during speed factor correction for 48V battery
 #define BATTERYCURRENT_MAX 25000//Maximum battery current for 48V Battery in mA
 
 #define PH_CURRENT_MAX_36 720//Phase current for 36V battery
+#define PH_CURRENT_BOOST_36 900//Maximum phase current during speed factor correction for 36V battery
 #define BATTERYCURRENT_MAX_36 20000//Maximum battery current for 36V Battery in mA
 
 #define STARTASSIST_CURRENT 250 // Start assist phase current from throttle when in legal mode.
@@ -146,7 +148,7 @@
 //#define DISPLAY_TYPE DISPLAY_TYPE_KINGMETER_901U //KM5S
 #define DISPLAY_TYPE DISPLAY_TYPE_KUNTENG //KT LCD3
 
-//#define ENABLE_WATT_METER //Only for KT Displays. Comment out to disable. If Watt meter is disabled gives a spoof reading and shows below 250W. Can be re-enabled temporarily until switch off by activating stealth mode.
+#define ENABLE_WATT_METER //Only for KT Displays. Comment out to disable. If Watt meter is disabled gives a spoof reading and shows below 250W. Can be re-enabled temporarily until switch off by activating stealth mode.
 
 //---------------------------------------------------------------------
 //Regen settings
@@ -164,11 +166,18 @@
 #define ASSIST_LEVEL_4_L 107 //From 0 to 255. 107 is ~ 42%
 #define ASSIST_LEVEL_5_L 255 //From 0 to 255. 255 is ~ 100%
 
-//Normal Assist Level - Kunteng Paramater C14 is 2. Default in main.c is 2 for other makes of display.
-#define ASSIST_LEVEL_1 33 //From 0 to 255. 33 is ~ 13%
-#define ASSIST_LEVEL_2 51 //From 0 to 255. 51 is ~ 20%
-#define ASSIST_LEVEL_3 84 //From 0 to 255. 84 is ~ 33%
-#define ASSIST_LEVEL_4 128 //From 0 to 255. 128 is ~ 50%
+//Normal Assist Level for 36V Battery - Kunteng Paramater C14 is 2. Default in main.c is 2 for some other makes of display.
+#define ASSIST_LEVEL_1_36 33 //From 0 to 255. 33 is ~ 13%
+#define ASSIST_LEVEL_2_36 51 //From 0 to 255. 51 is ~ 20%
+#define ASSIST_LEVEL_3_36 84 //From 0 to 255. 84 is ~ 33%
+#define ASSIST_LEVEL_4_36 128 //From 0 to 255. 128 is ~ 50%
+#define ASSIST_LEVEL_5_36 255 //From 0 to 255. 255 is ~ 100%
+
+//Normal Assist Level for 48V Battery - Kunteng Paramater C14 is 2. Default in main.c is 2 for some other makes of display.
+#define ASSIST_LEVEL_1 28 //From 0 to 255. 28 is ~ 11%
+#define ASSIST_LEVEL_2 43 //From 0 to 255.  43 is ~ 17%
+#define ASSIST_LEVEL_3 70 //From 0 to 255. 70 is ~ 27%
+#define ASSIST_LEVEL_4 107 //From 0 to 255. 107 is ~ 42%
 #define ASSIST_LEVEL_5 255 //From 0 to 255. 255 is ~ 100%
 
 //High Assist Level - Kunteng Paramater C14 is 3.
