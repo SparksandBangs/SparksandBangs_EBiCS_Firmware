@@ -198,6 +198,7 @@ int16_t i16_cosinus=0;
 char buffer[100];
 char char_dyn_adc_state_old=1;
 const uint8_t assist_factor_L[10]={0, ASSIST_LEVEL_1_L, ASSIST_LEVEL_2_L, ASSIST_LEVEL_3_L, ASSIST_LEVEL_4_L, ASSIST_LEVEL_5_L, 255, 255, 255, 255};
+const uint8_t assist_factor_36[10]={0, ASSIST_LEVEL_1_36, ASSIST_LEVEL_2_36, ASSIST_LEVEL_3_36, ASSIST_LEVEL_4_36, ASSIST_LEVEL_5_36, 255, 255, 255, 255};
 const uint8_t assist_factor[10]={0, ASSIST_LEVEL_1, ASSIST_LEVEL_2, ASSIST_LEVEL_3, ASSIST_LEVEL_4, ASSIST_LEVEL_5, 255, 255, 255, 255};
 const uint8_t assist_factor_H[10]={0, ASSIST_LEVEL_1_H, ASSIST_LEVEL_2_H, ASSIST_LEVEL_3_H, ASSIST_LEVEL_4_H, ASSIST_LEVEL_5_H, 255, 255, 255, 255};
 const uint8_t assist_profile[2][6]= {	{0,10,20,30,45,48},
@@ -233,6 +234,7 @@ uint16_t VirtAddVarTab[NB_OF_VAR] = { 	EEPROM_POS_HALL_ORDER,
 
 uint16_t uint16_minimum_voltage_battery_type = 1900;
 uint16_t uint16_current_max_battery_type = 0;
+uint16_t uint16_current_boost_battery_type = 0;
 uint16_t uint16_batterycurrent_max_battery_type = 0;
 
 uint16_t uint16_start_assist_current = STARTASSIST_CURRENT;
@@ -781,6 +783,7 @@ int main(void)
 //Set current limits and minimum voltages. If battery is under 43V assume 36V battery.
 		if(MS.Voltage>1720){//1720*25 is 43V
 			uint16_current_max_battery_type = PH_CURRENT_MAX;
+			uint16_current_boost_battery_type = PH_CURRENT_BOOST;
 			uint16_batterycurrent_max_battery_type = BATTERYCURRENT_MAX;
 			uint16_minimum_voltage_battery_type = VOLTAGE_MIN;
 			uint16_start_assist_current = STARTASSIST_CURRENT;
@@ -789,6 +792,7 @@ int main(void)
 		else{
 			uint16_current_max_battery_type = PH_CURRENT_MAX_36;
 			uint16_batterycurrent_max_battery_type = BATTERYCURRENT_MAX_36;
+			uint16_current_boost_battery_type = PH_CURRENT_BOOST_36;
 			uint16_minimum_voltage_battery_type = VOLTAGE_MIN_36;
 			uint16_start_assist_current = STARTASSIST_CURRENT_36;
 			uint16_walk_assist_current = WALKASSIST_CURRENT_36;
@@ -878,8 +882,14 @@ int main(void)
 
 #if (DISPLAY_TYPE == DISPLAY_TYPE_KUNTENG)
 				if (MP.power_assist_tuning == 2) {
-					uint8_assist_figure = assist_factor[MS.assist_level];
-					uint8_assist_figure_L1 = assist_factor[1];
+					if(MS.Voltage>1720){//48V battery
+						uint8_assist_figure = assist_factor[MS.assist_level];
+						uint8_assist_figure_L1 = assist_factor[1];
+					}
+					else{//36V battery
+						uint8_assist_figure = assist_factor_36[MS.assist_level];
+						uint8_assist_figure_L1 = assist_factor[1];
+					}
 				}
 				else if (MP.power_assist_tuning == 1) {
 					uint8_assist_figure = assist_factor_L[MS.assist_level];
@@ -894,9 +904,8 @@ int main(void)
 				if(uint8_softstart_low_power>uint8_assist_figure){uint8_softstart_low_power=uint8_assist_figure;}
 
 				int32_out_min1 = (uint16_current_max_battery_type * uint8_softstart_low_power) >> 8;
-				//int32_out_max1 = (uint16_current_max_battery_type * uint8_assist_figure) >> 8;
 				//Speed factor correction. Adds more current at slower wheel speed to counteract known speed bug delivering more power at higher speeds.
-				int32_out_max1 = map(MS.Battery_Current, 0 , (MP.battery_current_max * uint8_assist_figure)>>8, (uint16_current_max_battery_type), (uint16_current_max_battery_type * uint8_assist_figure)>>8);
+				int32_out_max1 = map(MS.Battery_Current, 0 , (MP.battery_current_max * uint8_assist_figure)>>8, (uint16_current_boost_battery_type), (uint16_current_max_battery_type * uint8_assist_figure)>>8);
 
 				//PAS flag counter count number of pulses before mapped PAS value is increased from zero.
 				if(uint8_PAS_flag_counter<PAS_FLAG_START_DELAY){//defined in config.h
