@@ -940,7 +940,7 @@ int main(void)
 				int32_out_min1 = (uint16_current_max_battery_type * uint8_softstart_low_power) >> 8;
 				//int32_out_max1 = (uint16_current_max_battery_type * uint8_assist_figure) >> 8;
 				//Speed factor correction. Adds more current at slower wheel speed to counteract known speed bug delivering more power at higher speeds.
-				int32_out_max1 = map(MS.Battery_Current, 0 , (MP.battery_current_max * uint8_assist_figure)>>8, (uint16_current_max_battery_type), (uint16_current_max_battery_type * uint8_assist_figure)>>8);
+				int32_out_max1 = map(MS.Battery_Current, 0 , (MP.battery_current_max * uint8_assist_figure)>>8, (uint16_current_boost_battery_type), (uint16_current_max_battery_type * uint8_assist_figure)>>8);
 
 				//PAS flag counter count number of pulses before mapped PAS value is increased from zero.
 				if(uint8_PAS_flag_counter<PAS_FLAG_START_DELAY){//defined in config.h
