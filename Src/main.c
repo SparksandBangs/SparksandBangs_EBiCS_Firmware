@@ -930,10 +930,27 @@ int main(void)
 #endif
 
 #if (DISPLAY_TYPE == DISPLAY_TYPE_KINGMETER_901U||DISPLAY_TYPE == DISPLAY_TYPE_NO2)
-				//uint16_mapped_PAS = map(uint32_PAS, RAMP_END, PAS_TIMEOUT, ((uint16_current_max_battery_type*(int32_t)(MS.assist_level)))>>8, 0); // level in range 0...255
 
-				uint8_assist_figure = MS.assist_level;
+				//uint8_assist_figure = MS.assist_level; // level in range 0...255
 
+				//Code to map KM5S assist levels to fixed from config.h. Not tested will need adjusting depending on actual values from display.
+				// level in range 0...255
+				if(MS.Voltage>1720){
+					if (MS.assist_level<10){uint8_assist_figure=assist_factor[0];}
+					else if (MS.assist_level<90){uint8_assist_figure=assist_factor[1];}
+					else if (MS.assist_level<135){uint8_assist_figure=assist_factor[2];}
+					else if (MS.assist_level<180){uint8_assist_figure=assist_factor[3];}
+					else if (MS.assist_level<225){uint8_assist_figure=assist_factor[4];}
+					else {uint8_assist_figure=assist_factor[5];}
+				}
+				else{
+					if (MS.assist_level<10){uint8_assist_figure=assist_factor[0];}
+					else if (MS.assist_level<90){uint8_assist_figure=assist_factor_36[1];}
+					else if (MS.assist_level<135){uint8_assist_figure=assist_factor_36[2];}
+					else if (MS.assist_level<180){uint8_assist_figure=assist_factor_36[3];}
+					else if (MS.assist_level<225){uint8_assist_figure=assist_factor_36[4];}
+					else {uint8_assist_figure=assist_factor_36[5];}
+				}
 				// Calculate output range (assist)
 				if(uint8_softstart_low_power>uint8_assist_figure){uint8_softstart_low_power=uint8_assist_figure;}
 
