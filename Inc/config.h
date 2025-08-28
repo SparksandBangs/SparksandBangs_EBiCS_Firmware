@@ -78,16 +78,16 @@
 //#define DIRDET //Direction detection - used to determine if pedal sensor is rotating backwards. Not needed with double hall PAS (comment out).
 #define FRAC_HIGH 30 //Used with DIRDET
 #define FRAC_LOW 15 //Used with DIRDET
-#define PAS_TIMEOUT 3000//PAS_TIMEOUT must be higher than RAMP_END
-#define RAMP_END 2000
+#define PAS_TIMEOUT 3000 //PAS_TIMEOUT must be higher than RAMP_END
+#define RAMP_END 2000 //Ramp end removed for torque simulation. Now has no effect.
 #define PAS_IMP_PER_TURN 32//Appears to have no effects in torque simulation mode.
 #define PAS_FLAG_START_DELAY 2 //Number of flags detected before PAS Assist engages.
 
 //---------------------------------------------------------------------
 //Throttle settings
-#define THROTTLE_OFFSET 1250   //only default value, throttle offset is set at startup automatically
-#define THROTTLE_MAX 2850
-#define THROTTLE_OVERRIDE
+#define THROTTLE_OFFSET 1250 //only default value, throttle offset is set at startup automatically
+#define THROTTLE_MAX 2850 //ADC-value at full throttle. Should be set at slightly less than measured maximum to get full current at full throttle travel.
+#define THROTTLE_OVERRIDE //Throttle overrides PAS if signal is greater.
 #define THROTTLE_GRADUATED //If present throttle is scaled. If commented out throttle works as an on/off switch delivering maximum power when pressed.
 
 //--------------------------------------------------------------------
@@ -100,7 +100,7 @@
 
 
 #define SOFTSTART 9 // On PAS ramps current at startup between 0kmph and SOFTSTART value from SOFTSTART_LOW_POWER to selected Assistance level power. Setting is in whole kmph.
-#define SOFTSTART_LOW_POWER 30 //From 0 to 255. 33 is ~ 13% of phase current. Ramps up from this value to assist level value between 0kmph and SOFTSTART
+#define SOFTSTART_LOW_POWER 20 //From 0 to 255. 33 is ~ 13% of phase current. Ramps up from this value to assist level value between 0kmph and SOFTSTART
 #define CUTOFF_POWER 20 //Minimum power still provided at point of legal limit cutoff. After this point will drop to 0. From 0 to 255. 33 is ~ 13% of phase current. Should be less than lowest Assist Level 1.
 
 #define SPEEDSOURCE EXTERNAL //INTERNAL speed is derived from Hall sensors. EXTERNAL from 'white wire' or external sensor.
@@ -148,7 +148,7 @@
 //#define DISPLAY_TYPE DISPLAY_TYPE_KINGMETER_901U //KM5S
 #define DISPLAY_TYPE DISPLAY_TYPE_KUNTENG //KT LCD3
 
-#define ENABLE_WATT_METER //Only for KT Displays. Comment out to disable. If Watt meter is disabled gives a spoof reading and shows below 250W. Can be re-enabled temporarily until switch off by activating stealth mode.
+//#define ENABLE_WATT_METER //Only for KT Displays. Comment out to disable. If Watt meter is disabled gives a spoof reading and shows below 250W. Can be re-enabled temporarily until switch off by activating stealth mode.
 
 //---------------------------------------------------------------------
 //Regen settings
@@ -158,9 +158,9 @@
 //#define ADC_BRAKE
 
 //---------------------------------------------------------------------
-//Assist Level Profiles for Kunteng Controller. Normal Assist Level may also work with Bafang and Kingmeter but not tested with these displays.
+//Assist Level Profiles for Kunteng Controller. Normal Assist Level may also work with Bafang and Kingmeter but not tested fully with these displays.
 //Low Assist Level - Kunteng Paramater C14 is 1.
-#define ASSIST_LEVEL_1_L 28 //From 0 to 255. 28 is ~ 11%
+#define ASSIST_LEVEL_1_L 25 //From 0 to 255. 25 is ~ 10%
 #define ASSIST_LEVEL_2_L 43 //From 0 to 255. 43 is ~ 17%
 #define ASSIST_LEVEL_3_L 70 //From 0 to 255. 70 is ~ 27%
 #define ASSIST_LEVEL_4_L 107 //From 0 to 255. 107 is ~ 42%
@@ -174,11 +174,11 @@
 #define ASSIST_LEVEL_5_36 255 //From 0 to 255. 255 is ~ 100%
 
 //Normal Assist Level for 48V Battery - Kunteng Paramater C14 is 2. Default in main.c is 2 for some other makes of display.
-#define ASSIST_LEVEL_1 28 //From 0 to 255. 28 is ~ 11%
+#define ASSIST_LEVEL_1 25 //From 0 to 255. 25 is ~ 10%
 #define ASSIST_LEVEL_2 43 //From 0 to 255.  43 is ~ 17%
 #define ASSIST_LEVEL_3 70 //From 0 to 255. 70 is ~ 27%
 #define ASSIST_LEVEL_4 107 //From 0 to 255. 107 is ~ 42%
-#define ASSIST_LEVEL_5 255 //From 0 to 255. 255 is ~ 100%
+#define ASSIST_LEVEL_5 204 //From 0 to 255. 204 is ~ 80%
 
 //High Assist Level - Kunteng Paramater C14 is 3.
 #define ASSIST_LEVEL_1_H 40 //From 0 to 255. 40 is ~ 16%
@@ -188,6 +188,6 @@
 #define ASSIST_LEVEL_5_H 255 //From 0 to 255. 255 is ~ 100%
 
 //---------------------------------------------------------------------
-#define AUTODETECT 0
+#define AUTODETECT 0 //To be used on first set up with new motor. Combine with setting DISPLAY_TYPE DISPLAY_TYPE_DEBUG. Wheel should be off the ground while setup takes place.
 
 #endif /* CONFIG_H_ */
